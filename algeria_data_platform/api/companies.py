@@ -25,3 +25,33 @@ def create_company(company: company_schema.CompanyCreate, db: Session = Depends(
     if db_company:
         raise HTTPException(status_code=400, detail="Company ID already registered")
     return crud.company.create_company(db=db, company=company)
+
+@router.get("/{company_id}", response_model=company_schema.CompanySchema)
+def read_company(company_id: str, db: Session = Depends(get_db)):
+    """
+    Retrieve a single company by its ID.
+    """
+    db_company = crud.company.get_company(db, company_id=company_id)
+    if db_company is None:
+        raise HTTPException(status_code=404, detail="Company not found")
+    return db_company
+
+@router.put("/{company_id}", response_model=company_schema.CompanySchema)
+def update_company(company_id: str, company: company_schema.CompanyUpdate, db: Session = Depends(get_db)):
+    """
+    Update an existing company.
+    """
+    db_company = crud.company.update_company(db, company_id=company_id, company=company)
+    if db_company is None:
+        raise HTTPException(status_code=404, detail="Company not found")
+    return db_company
+
+@router.delete("/{company_id}", response_model=company_schema.CompanySchema)
+def delete_company(company_id: str, db: Session = Depends(get_db)):
+    """
+    Delete a company.
+    """
+    db_company = crud.company.delete_company(db, company_id=company_id)
+    if db_company is None:
+        raise HTTPException(status_code=404, detail="Company not found")
+    return db_company

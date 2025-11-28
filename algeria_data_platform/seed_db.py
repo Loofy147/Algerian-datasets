@@ -2,7 +2,7 @@ import pandas as pd
 from sqlalchemy.orm import sessionmaker
 from .database import engine, Base
 from .models import Company
-from .data_loader import COMPANY_DATA_PATH
+from .data_loader import COMPANY_DATA_PATH, load_companies_from_csv
 import logging
 
 # Configure basic logging
@@ -22,12 +22,11 @@ def seed_database():
     db_session = Session()
 
     try:
-        # Load data from CSV
-        if not COMPANY_DATA_PATH.exists():
-            logging.error(f"Data file not found at: {COMPANY_DATA_PATH}")
+        # Load data from CSV using the refactored function
+        df = load_companies_from_csv(COMPANY_DATA_PATH)
+        if df.empty:
+            logging.warning("Company data is empty, skipping seeding.")
             return
-
-        df = pd.read_csv(COMPANY_DATA_PATH)
 
         # Keep track of companies to add and IDs processed from the CSV
         companies_to_add = []

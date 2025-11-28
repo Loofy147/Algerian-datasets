@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from algeria_data_platform import crud
-from algeria_data_platform.schemas.company import CompanyCreate
+from algeria_data_platform.schemas.company import CompanyCreate, CompanyUpdate
 from algeria_data_platform.db.models import Company
 
 def test_create_company(db_session: Session):
@@ -23,3 +23,21 @@ def test_get_companies(db_session: Session):
     db_session.commit()
     companies = crud.company.get_companies(db_session)
     assert len(companies) == 2
+
+def test_update_company(db_session: Session):
+    company = Company(company_id="1", legal_name="Test Company", status="Active")
+    db_session.add(company)
+    db_session.commit()
+    company_update = CompanyUpdate(legal_name="Updated Company", status="Inactive")
+    updated_company = crud.company.update_company(db_session, company_id="1", company=company_update)
+    assert updated_company.legal_name == "Updated Company"
+    assert updated_company.status == "Inactive"
+
+def test_delete_company(db_session: Session):
+    company = Company(company_id="1", legal_name="Test Company", status="Active")
+    db_session.add(company)
+    db_session.commit()
+    deleted_company = crud.company.delete_company(db_session, company_id="1")
+    assert deleted_company.company_id == "1"
+    retrieved_company = crud.company.get_company(db_session, company_id="1")
+    assert retrieved_company is None
