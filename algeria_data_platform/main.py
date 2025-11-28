@@ -3,8 +3,11 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 
-from .data_loader import load_and_clean_company_data
+from sqlalchemy.orm import Session
+from fastapi import Depends
+from .data_loader import get_all_companies_as_df
 from .core.config import settings
+from .database import get_db
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -40,11 +43,9 @@ def read_root():
     return {"environment": settings.ENV}
 
 @app.get("/api/v1/companies")
-def get_companies():
+def get_companies(db: Session = Depends(get_db)):
     """
-    Retrieves a list of Algerian companies from the seed dataset.
-    This endpoint serves as a proof-of-concept for the data serving layer.
+    Retrieves a list of Algerian companies from the database.
     """
-    company_data = load_and_clean_company_data()
-    # Convert DataFrame to a list of dictionaries for JSON serialization
+    company_data = get_all_companies_as_df(db)
     return company_data.to_dict(orient="records")

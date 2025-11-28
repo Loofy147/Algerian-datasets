@@ -1,65 +1,52 @@
 from fastapi.testclient import TestClient
-from unittest.mock import patch
-import pandas as pd
-
-# Import the FastAPI app instance from your main application file
+from sqlalchemy.orm import Session
+from algeria_data_platform.models import Company
 from algeria_data_platform.main import app
 
-# Create a TestClient instance
-client = TestClient(app)
+# The test_client fixture is now defined in conftest.py and does not need to be imported here
 
-def test_read_root():
+def test_read_root(test_client: TestClient):
     """
     Tests the root endpoint ('/') to ensure it returns the correct environment.
     """
-    response = client.get("/")
+    response = test_client.get("/")
     assert response.status_code == 200
-    assert response.json() == {"environment": "development"}  # Default value from config
+    assert response.json() == {"environment": "development"}
 
-def test_cors_headers_are_present():
+def test_cors_headers_are_present(test_client: TestClient):
     """
     Tests that CORS headers are present in the response when an 'Origin'
     header is included in the request.
     """
-    # CORS headers are only added if the request includes an 'Origin' header
-    response = client.get("/", headers={"Origin": "http://testserver"})
+    response = test_client.get("/", headers={"Origin": "http://testserver"})
     assert response.status_code == 200
     assert "access-control-allow-origin" in response.headers
     assert response.headers["access-control-allow-origin"] == "*"
 
-@patch('algeria_data_platform.main.load_and_clean_company_data')
-def test_get_companies_endpoint_success(mock_load_data):
+def test_get_companies_endpoint_success(db_session: Session, test_client: TestClient):
     """
-    Tests the '/api/v1/companies' endpoint for a successful data retrieval.
-    - Mocks the data loader to return a sample DataFrame.
-    - Verifies the status code and the structure of the JSON response.
+    Tests the '/api/v1/companies' endpoint for a successful data retrieval
+    from the test database.
     """
-    # Configure the mock to return a sample DataFrame
-    mock_load_data.return_value = pd.DataFrame({
-        'company_id': ['123', '456'],
-        'name': ['Test Corp A', 'Test Corp B'],
-        'description': ['A test company', None]
-    })
+    # Add some test data to the in-memory database
+    db_session.add_all([
+        Company(company_id='1', legal_name='Test Corp A', status='Active'),
+        Company(company_id='2', legal_name='Test Corp B', status='Inactive')
+    ])
+    db_session.commit()
 
-    response = client.get("/api/v1/companies")
+    response = test_client.get("/api/v1/companies")
     assert response.status_code == 200
 
-    # Verify the response body
-    expected_data = [
-        {'company_id': '123', 'name': 'Test Corp A', 'description': 'A test company'},
-        {'company_id': '456', 'name': 'Test Corp B', 'description': None}
-    ]
-    assert response.json() == expected_data
+    data = response.json()
+    assert len(data) == 2
+    assert data[0]['legal_name'] == 'Test Corp A'
+    assert data[1]['status'] == 'Inactive'
 
-@patch('algeria_data_platform.main.load_and_clean_company_data')
-def test_get_companies_endpoint_empty_dataframe(mock_load_data):
+def test_get_companies_endpoint_empty_database(test_client: TestClient):
     """
-    Tests the '/api/v1/companies' endpoint when the data loader returns an empty DataFrame.
-    - Ensures the API returns an empty list without errors.
+    Tests the '/api/v1/companies' endpoint when the database is empty.
     """
-    # Configure the mock to return an empty DataFrame
-    mock_load_data.return_value = pd.DataFrame()
-
-    response = client.get("/api/v1/companies")
+    response = test_client.get("/api/v1/companies")
     assert response.status_code == 200
     assert response.json() == []
