@@ -1,7 +1,7 @@
 import pandas as pd
 from sqlalchemy.orm import Session
 from algeria_data_platform.data_loader import get_all_companies_as_df
-from algeria_data_platform.models import Company
+from algeria_data_platform.db.models import Company
 
 def test_get_all_companies_as_df_returns_dataframe(db_session: Session):
     """

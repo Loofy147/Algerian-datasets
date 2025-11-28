@@ -3,9 +3,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
 
-from algeria_data_platform.database import Base, get_db
+from algeria_data_platform.db.session import Base, get_db
 from algeria_data_platform.main import app
-from algeria_data_platform import models
+from algeria_data_platform.db import models
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
 

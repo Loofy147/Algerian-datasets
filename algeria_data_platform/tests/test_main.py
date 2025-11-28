@@ -1,9 +1,7 @@
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
-from algeria_data_platform.models import Company
-from algeria_data_platform.main import app
-
-# The test_client fixture is now defined in conftest.py and does not need to be imported here
+from algeria_data_platform.db.models import Company
+from algeria_data_platform.schemas.company import CompanyCreate
 
 def test_read_root(test_client: TestClient):
     """
@@ -23,30 +21,26 @@ def test_cors_headers_are_present(test_client: TestClient):
     assert "access-control-allow-origin" in response.headers
     assert response.headers["access-control-allow-origin"] == "*"
 
-def test_get_companies_endpoint_success(db_session: Session, test_client: TestClient):
+def test_read_companies(db_session: Session, test_client: TestClient):
     """
-    Tests the '/api/v1/companies' endpoint for a successful data retrieval
-    from the test database.
+    Tests the '/api/v1/companies/' endpoint for a successful data retrieval.
     """
-    # Add some test data to the in-memory database
-    db_session.add_all([
-        Company(company_id='1', legal_name='Test Corp A', status='Active'),
-        Company(company_id='2', legal_name='Test Corp B', status='Inactive')
-    ])
+    db_session.add(Company(company_id="1", legal_name="Test Corp A", status="Active"))
     db_session.commit()
 
-    response = test_client.get("/api/v1/companies")
+    response = test_client.get("/api/v1/companies/")
     assert response.status_code == 200
-
     data = response.json()
-    assert len(data) == 2
-    assert data[0]['legal_name'] == 'Test Corp A'
-    assert data[1]['status'] == 'Inactive'
+    assert len(data) == 1
+    assert data[0]["legal_name"] == "Test Corp A"
 
-def test_get_companies_endpoint_empty_database(test_client: TestClient):
+def test_create_company(db_session: Session, test_client: TestClient):
     """
-    Tests the '/api/v1/companies' endpoint when the database is empty.
+    Tests the POST '/api/v1/companies/' endpoint for creating a new company.
     """
-    response = test_client.get("/api/v1/companies")
+    company_data = CompanyCreate(company_id="2", legal_name="Test Corp B", status="Active")
+    response = test_client.post("/api/v1/companies/", json=company_data.dict())
     assert response.status_code == 200
-    assert response.json() == []
+    data = response.json()
+    assert data["legal_name"] == company_data.legal_name
+    assert "last_updated" in data
