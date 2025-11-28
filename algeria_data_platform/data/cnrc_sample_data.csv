@@ -1,0 +1,11 @@
+company_id,company_name,legal_form,capital_amount_dzd,registration_date,wilaya
+16001234567,"SARL Tech Solutions",SARL,500000,2022-01-15,16 - Alger
+16002345678,"EURL Digital Innovations",EURL,200000,2021-11-20,31 - Oran
+41009876543,"SPA Construction Group",SPA,10000000,2019-03-10,41 - Souk Ahras
+25001122334,"SNC Food Distributors",SNC,,2023-05-02,25 - Constantine
+16005566778,"SARL Consulting Services",SARL,750000,2020-08-25,16 - Alger
+09001231234,"SARL Agro-Industry Partners",SARL,1200000,2022-04-18,09 - Blida
+31008888999,"EURL Maritime Services",EURL,300000,2023-01-30,31 - Oran
+16007777888,"SPA International Trading",SPA,25000000,2018-07-12,16 - Alger
+,,"Unknown Company",,2021-02-01,06 - Béjaïa
+06001212121,"SARL Tourism & Travel",SARL,900000,2022-09-05,
