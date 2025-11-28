@@ -29,13 +29,18 @@ def seed_database():
 
         df = pd.read_csv(COMPANY_DATA_PATH)
 
-        # Keep track of companies to add
+        # Keep track of companies to add and IDs processed from the CSV
         companies_to_add = []
+        processed_ids = set()
 
         for _, row in df.iterrows():
             company_id = str(row['company_id'])
 
-            # Check if company already exists to prevent duplicates
+            # Skip if the company ID has already been processed from the CSV
+            if company_id in processed_ids:
+                continue
+
+            # Check if company already exists in the database to prevent duplicates
             exists = db_session.query(Company).filter(Company.company_id == company_id).first()
             if not exists:
                 company = Company(
@@ -45,6 +50,7 @@ def seed_database():
                     status=row.get('status')
                 )
                 companies_to_add.append(company)
+                processed_ids.add(company_id)
 
         if companies_to_add:
             db_session.add_all(companies_to_add)
