@@ -1,41 +1,35 @@
 import pandas as pd
+from sqlalchemy.orm import Session
+from .db.session import SessionLocal
+from .db.models import Company
 from pathlib import Path
-import numpy as np
 
-# Define the path to the data directory
+# Define the path to the data directory, still needed for seeding script
 DATA_DIR = Path(__file__).parent / "data"
 COMPANY_DATA_PATH = DATA_DIR / "cnrc_sample_data.csv"
 
-def load_and_clean_company_data() -> pd.DataFrame:
+def get_all_companies_as_df(db: Session) -> pd.DataFrame:
     """
-    Loads the company registry data from the seed CSV file and performs
-    a basic quality check.
+    Retrieves all company records from the database and returns them
+    as a pandas DataFrame.
+
+    Args:
+        db (Session): The SQLAlchemy database session.
 
     Returns:
-        pd.DataFrame: A DataFrame containing the cleaned company data.
+        pd.DataFrame: A DataFrame containing all company data.
     """
-    if not COMPANY_DATA_PATH.exists():
-        return pd.DataFrame()
-
-    # Load the raw "Bronze" data
-    df = pd.read_csv(COMPANY_DATA_PATH)
-
-    # --- Basic Data Quality Check (Transition to "Silver") ---
-    # 1. Drop rows where the primary identifier is missing.
-    cleaned_df = df.dropna(subset=['company_id'])
-
-    # 2. Ensure company_id is a clean string (int -> str)
-    cleaned_df = cleaned_df.astype({'company_id': 'int64'}).astype({'company_id': 'str'})
-
-    # 3. Replace NaN values with None for JSON compatibility
-    final_df = cleaned_df.replace({np.nan: None})
-
-    return final_df
+    query = db.query(Company)
+    df = pd.read_sql(query.statement, db.bind)
+    return df
 
 if __name__ == '__main__':
-    # A simple script to test the loader function
-    company_data = load_and_clean_company_data()
-    print("Successfully loaded and cleaned data:")
-    print(company_data.to_string())
-    print(f"\nOriginal row count: {len(pd.read_csv(COMPANY_DATA_PATH))}")
-    print(f"Cleaned row count: {len(company_data)}")
+    # A simple script to test the new database-backed function
+    db_session = SessionLocal()
+    try:
+        company_data = get_all_companies_as_df(db_session)
+        print("Successfully loaded data from the database:")
+        print(company_data.to_string())
+        print(f"\nTotal rows loaded: {len(company_data)}")
+    finally:
+        db_session.close()
