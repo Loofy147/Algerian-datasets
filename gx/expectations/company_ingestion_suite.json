@@ -1,0 +1,36 @@
+{
+  "expectation_suite_name": "company_ingestion_suite",
+  "ge_cloud_id": null,
+  "expectations": [
+    {
+      "expectation_type": "expect_table_columns_to_match_set",
+      "kwargs": {
+        "column_set": [
+          "company_id",
+          "legal_name",
+          "status",
+          "trade_name"
+        ]
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "company_id"
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_unique",
+      "kwargs": {
+        "column": "company_id"
+      },
+      "meta": {}
+    }
+  ],
+  "data_asset_type": null,
+  "meta": {
+    "great_expectations_version": "0.18.10"
+  }
+}
