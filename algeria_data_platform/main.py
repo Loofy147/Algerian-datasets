@@ -3,7 +3,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from .core.config import settings
-from .api import companies
+from .api import companies, ingestion
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -38,3 +38,4 @@ def read_root():
 
 # Include the companies router
 app.include_router(companies.router, prefix="/api/v1/companies", tags=["companies"])
+app.include_router(ingestion.router, prefix="/api/v1", tags=["ingestion"])
