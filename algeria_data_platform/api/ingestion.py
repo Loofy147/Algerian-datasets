@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Backgro
 from sqlalchemy.orm import Session
 from ..db.session import get_db, SessionLocal
 from ..services import ingestion
+from ..services.ingestion import DataValidationError
 from ..data_loader import load_companies_from_csv
 import pandas as pd
 import io
@@ -12,7 +13,7 @@ def process_ingestion(df: pd.DataFrame):
     """Helper function to run ingestion in the background."""
     db = SessionLocal()
     try:
-        ingestion.ingest_company_data(db, df)
+        ingestion.insert_company_data(db, df)
     finally:
         db.close()
 
@@ -39,6 +40,15 @@ async def ingest_companies(
         raise HTTPException(
             status_code=400,
             detail=f"Missing required columns. Required: {', '.join(required_columns)}"
+        )
+
+    try:
+        # We run a validation check here before queueing the background task
+        ingestion.validate_company_data(df)
+    except DataValidationError as e:
+        raise HTTPException(
+            status_code=400,
+            detail={"message": "Data validation failed", "errors": e.validation_result.to_json_dict()}
         )
 
     background_tasks.add_task(process_ingestion, df)

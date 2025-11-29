@@ -77,3 +77,26 @@ def test_ingest_companies_malformed_csv(db_session: Session):
     )
     assert response.status_code == 400
     assert "Missing required columns" in response.json()["detail"]
+
+def test_ingest_companies_data_quality_validation(db_session: Session):
+    """
+    - Tests the /api/v1/ingest/companies endpoint with data that violates
+      the Great Expectations suite.
+    - Uploads a CSV file with a duplicate company ID and verifies that a
+      400 Bad Request error is returned with validation details.
+    """
+    # Sample CSV data with a duplicate company ID
+    csv_data = """company_id,legal_name,trade_name,status
+1,Test Company 1,TC1,Active
+1,Test Company 2,TC2,Inactive
+"""
+
+    response = client.post(
+        "/api/v1/ingest/companies",
+        files={"file": ("test.csv", io.BytesIO(csv_data.encode()), "text/csv")}
+    )
+    assert response.status_code == 400
+    response_json = response.json()
+    assert response_json["detail"]["message"] == "Data validation failed"
+    assert "errors" in response_json["detail"]
+    assert response_json["detail"]["errors"]["results"][2]["expectation_config"]["expectation_type"] == "expect_column_values_to_be_unique"
