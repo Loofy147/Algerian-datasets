@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime, func
+from sqlalchemy import Column, String, DateTime, func, Integer, Date, Float
 from .session import Base
 
 class Company(Base):
@@ -15,3 +15,26 @@ class Company(Base):
     trade_name = Column(String, nullable=True)
     status = Column(String)
     last_updated = Column(DateTime, server_default=func.now(), onupdate=func.now())
+    capital_amount_dzd = Column(Integer, nullable=True)
+    registration_date = Column(Date, nullable=True)
+    wilaya = Column(String(2), nullable=True, index=True)
+    legal_form = Column(String(10), nullable=True, index=True)
+    nace_code = Column(String(10), nullable=True)
+    geocoded_lat = Column(Float, nullable=True)
+    geocoded_lon = Column(Float, nullable=True)
+    quality_score = Column(Float, default=0.0)
+
+class Salary(Base):
+    """
+    Represents a salary entry in the database.
+    """
+    __tablename__ = "salaries"
+
+    id = Column(Integer, primary_key=True, index=True)
+    job_title = Column(String, index=True)
+    min_salary_dzd = Column(Integer)
+    max_salary_dzd = Column(Integer)
+    currency = Column(String)
+    period = Column(String)
+    source = Column(String)
+    scraped_at = Column(DateTime)

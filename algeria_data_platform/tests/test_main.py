@@ -39,7 +39,7 @@ def test_create_company(db_session: Session, test_client: TestClient):
     Tests the POST '/api/v1/companies/' endpoint for creating a new company.
     """
     company_data = CompanyCreate(company_id="2", legal_name="Test Corp B", status="Active")
-    response = test_client.post("/api/v1/companies/", json=company_data.dict())
+    response = test_client.post("/api/v1/companies/", json=company_data.model_dump())
     assert response.status_code == 200
     data = response.json()
     assert data["legal_name"] == company_data.legal_name
