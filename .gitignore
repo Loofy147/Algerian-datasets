@@ -89,3 +89,4 @@ venv.bak/
 algeria_data_platform.db
 *.sqlite
 *.sqlite3
+scraped_data/
