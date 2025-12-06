@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from ..db.session import get_db, SessionLocal
 from ..services import ingestion
 from ..services.ingestion import DataValidationError
-from ..data_loader import load_companies_from_csv
+from ..data_loader import load_and_clean_companies_from_csv
 import pandas as pd
 import io
 

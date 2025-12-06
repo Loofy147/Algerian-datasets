@@ -1,5 +1,22 @@
-from sqlalchemy import Column, String, DateTime, func
+from sqlalchemy import Column, String, DateTime, func, Integer
 from .database import Base
+
+class Salary(Base):
+    """
+    Represents a salary entry in the database.
+    - Maps to the 'salaries' table.
+    - Includes fields for job title, salary range, and data source.
+    """
+    __tablename__ = "salaries"
+
+    id = Column(Integer, primary_key=True, index=True)
+    job_title = Column(String, index=True)
+    min_salary_dzd = Column(Integer)
+    max_salary_dzd = Column(Integer)
+    currency = Column(String)
+    period = Column(String)
+    source = Column(String)
+    scraped_at = Column(DateTime)
 
 class Company(Base):
     """
