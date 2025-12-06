@@ -5,6 +5,8 @@ from datetime import datetime
 
 # Initialize Faker for synthetic data generation
 fake = Faker('fr_FR')
+Faker.seed(0)
+random.seed(0)
 
 # Define job titles and their salary ranges
 JOB_TITLES = {
@@ -32,7 +34,7 @@ def generate_salary_data(num_records: int) -> pd.DataFrame:
             "currency": "DZD",
             "period": "Monthly",
             "source": fake.company(),
-            "scraped_at": datetime.now(),
+            "scraped_at": "2025-12-06 12:00:00",
         })
     return pd.DataFrame(data)
 

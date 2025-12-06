@@ -13,6 +13,30 @@ DATA_DIR = Path(__file__).parent / "data"
 RAW_DATA_DIR = DATA_DIR / "raw"
 COMPANY_DATA_PATH = RAW_DATA_DIR / "cnrc_sample_data.csv"
 SALARY_DATA_PATH = RAW_DATA_DIR / "salary_sample_data.csv"
+DEMOGRAPHICS_DATA_PATH = RAW_DATA_DIR / "demographics.csv"
+ECONOMIC_INDICATORS_DATA_PATH = RAW_DATA_DIR / "economic_indicators.csv"
+
+def load_economic_indicators_from_csv(filepath: Path) -> pd.DataFrame:
+    """
+    Reads economic indicators data from a CSV file into a pandas DataFrame.
+    """
+    if not filepath.exists():
+        logging.error(f"Data file not found at: {filepath}")
+        return pd.DataFrame()
+
+    df = pd.read_csv(filepath)
+    return df
+
+def load_demographics_from_csv(filepath: Path) -> pd.DataFrame:
+    """
+    Reads demographics data from a CSV file into a pandas DataFrame.
+    """
+    if not filepath.exists():
+        logging.error(f"Data file not found at: {filepath}")
+        return pd.DataFrame()
+
+    df = pd.read_csv(filepath)
+    return df
 
 def load_salaries_from_csv(filepath: Path) -> pd.DataFrame:
     """

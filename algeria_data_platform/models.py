@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime, func, Integer
+from sqlalchemy import Column, String, DateTime, func, Integer, Float
 from .database import Base
 
 class Salary(Base):
@@ -17,6 +17,34 @@ class Salary(Base):
     period = Column(String)
     source = Column(String)
     scraped_at = Column(DateTime)
+
+class Demographic(Base):
+    """
+    Represents a demographic entry in the database.
+    - Maps to the 'demographics' table.
+    - Includes fields for population, births, and deaths by year and wilaya.
+    """
+    __tablename__ = "demographics"
+
+    id = Column(Integer, primary_key=True, index=True)
+    year = Column(Integer, index=True)
+    wilaya = Column(String, index=True)
+    population = Column(Integer)
+    births = Column(Integer)
+    deaths = Column(Integer)
+
+class EconomicIndicator(Base):
+    """
+    Represents an economic indicator entry in the database.
+    - Maps to the 'economic_indicators' table.
+    - Includes fields for the indicator name, year, and value.
+    """
+    __tablename__ = "economic_indicators"
+
+    id = Column(Integer, primary_key=True, index=True)
+    year = Column(Integer, index=True)
+    indicator_name = Column(String, index=True)
+    value = Column(Float)
 
 class Company(Base):
     """

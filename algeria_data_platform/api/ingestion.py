@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
-from ..db.session import get_db, SessionLocal
+from ..database import get_db, SessionLocal
 from ..services import ingestion
 from ..services.ingestion import DataValidationError
 from ..data_loader import load_and_clean_companies_from_csv
