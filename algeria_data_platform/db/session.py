@@ -6,7 +6,7 @@ from ..core.config import settings
 # The database URL is constructed from the settings module
 # In a real-world application, this would be configured with environment variables
 # For this example, we'll use a local SQLite database
-DATABASE_URL = "sqlite:///./algeria_data_platform.db"
+DATABASE_URL = settings.DATABASE_URL
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

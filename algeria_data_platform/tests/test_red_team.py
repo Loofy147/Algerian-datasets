@@ -2,7 +2,7 @@
 import pytest
 from algeria_data_platform.services.red_team_tests import RedTeamDataQuality
 from algeria_data_platform.services.ingestion import validate_company_data
-from algeria_data_platform.data_loader import load_companies_from_csv
+from algeria_data_platform.data_loader import load_and_clean_companies_from_csv
 import pandas as pd
 
 @pytest.fixture
@@ -14,7 +14,7 @@ from algeria_data_platform.data_loader import COMPANY_DATA_PATH
 @pytest.fixture
 def clean_df():
     # Using the actual data loader to ensure the test is realistic
-    return load_companies_from_csv(COMPANY_DATA_PATH)
+    return load_and_clean_companies_from_csv(COMPANY_DATA_PATH)
 
 def test_red_team_resilience(red_team_tester, clean_df):
     """

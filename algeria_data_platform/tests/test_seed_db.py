@@ -2,8 +2,8 @@ import pytest
 import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from algeria_data_platform.database import Base
-from algeria_data_platform.models import Company
+from algeria_data_platform.db.session import Base
+from algeria_data_platform.db.models import Company
 from algeria_data_platform.seed_db import seed_database
 from unittest.mock import patch
 import logging

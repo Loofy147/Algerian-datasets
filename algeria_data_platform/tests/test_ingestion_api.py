@@ -29,8 +29,8 @@ def test_ingest_companies(db_session: Session, monkeypatch):
 
     # Sample CSV data
     csv_data = """company_id,legal_name,trade_name,status
-1,Test Company 1,TC1,Active
-2,Test Company 2,TC2,Inactive
+12345678901,Test Company 1,TC1,Active
+12345678902,Test Company 2,TC2,Inactive
 """
 
     # First upload

@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     APP_VERSION: str = "0.1.0"
     APP_DESCRIPTION: str = "API for accessing high-quality Algerian market data and insights."
     ENV: str = "development"  # Default to development
+    DATABASE_URL: str = "sqlite:///./algeria_data_platform.db"
+    TEST_DATABASE_URL: str = "sqlite:///:memory:"
 
     class Config:
         # This tells Pydantic to look for a .env file
