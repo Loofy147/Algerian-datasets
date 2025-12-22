@@ -1,7 +1,7 @@
 import pandas as pd
 from sqlalchemy.orm import Session
-from .database import SessionLocal
-from .models import Company
+from .db.session import SessionLocal
+from .db.models import Company
 from pathlib import Path
 import logging
 

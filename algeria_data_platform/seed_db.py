@@ -1,6 +1,6 @@
 from sqlalchemy.orm import sessionmaker
-from .database import engine, Base
-from .models import Company, Salary
+from .db.session import engine, Base
+from .db.models import Company, Salary
 from .data_loader import COMPANY_DATA_PATH, SALARY_DATA_PATH, load_and_clean_companies_from_csv, load_salaries_from_csv
 import logging
 

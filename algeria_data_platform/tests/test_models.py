@@ -1,8 +1,8 @@
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from algeria_data_platform.models import Company
-from algeria_data_platform.database import Base
+from algeria_data_platform.db.models import Company
+from algeria_data_platform.db.session import Base
 
 # Use an in-memory SQLite database for testing the model
 DATABASE_URL = "sqlite:///:memory:"

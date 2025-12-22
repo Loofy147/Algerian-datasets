@@ -1,6 +1,6 @@
 import pytest
 from sqlalchemy.orm import Session
-from algeria_data_platform.database import get_db, SessionLocal, engine, Base
+from algeria_data_platform.db.session import get_db, SessionLocal, engine, Base
 
 def test_get_db():
     """

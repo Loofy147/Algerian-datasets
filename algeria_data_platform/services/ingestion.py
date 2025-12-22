@@ -1,6 +1,6 @@
 import pandas as pd
 from sqlalchemy.orm import Session
-from ..models import Company
+from ..db.models import Company
 import logging
 import great_expectations as gx
 from great_expectations.core.batch import RuntimeBatchRequest
