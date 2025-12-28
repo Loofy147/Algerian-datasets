@@ -1,12 +1,20 @@
 from pydantic import BaseModel
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, date
 
 class CompanyBase(BaseModel):
     """Base schema for company data, containing common fields."""
     legal_name: str
     trade_name: Optional[str] = None
     status: str
+    capital_amount_dzd: Optional[int] = None
+    registration_date: Optional[date] = None
+    wilaya: Optional[str] = None
+    legal_form: Optional[str] = None
+    nace_code: Optional[str] = None
+    geocoded_lat: Optional[float] = None
+    geocoded_lon: Optional[float] = None
+    quality_score: Optional[float] = None
 
 class CompanyCreate(CompanyBase):
     """Schema for creating a new company. Inherits from CompanyBase."""
