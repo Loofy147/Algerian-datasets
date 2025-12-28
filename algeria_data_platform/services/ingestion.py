@@ -42,6 +42,7 @@ def insert_company_data(db: Session, df: pd.DataFrame):
     """
     - Ingests company data into the database.
     - Skips duplicates based on the company ID.
+    - Handles pandas NaN/NaT values for database compatibility.
     """
     incoming_ids = set(df['company_id'].astype(str).unique())
 
@@ -53,14 +54,26 @@ def insert_company_data(db: Session, df: pd.DataFrame):
 
     companies_to_add = []
     if new_ids:
+        # Filter for new companies and drop duplicates
         new_companies_df = df[df['company_id'].astype(str).isin(new_ids)].drop_duplicates(subset=['company_id'])
+
+        # Replace pandas' null types with None for SQLAlchemy
+        new_companies_df = new_companies_df.astype(object).where(pd.notnull(new_companies_df), None)
 
         for _, row in new_companies_df.iterrows():
             companies_to_add.append(Company(
                 company_id=str(row['company_id']),
                 legal_name=row.get('legal_name'),
                 trade_name=row.get('trade_name'),
-                status=row.get('status')
+                status=row.get('status'),
+                capital_amount_dzd=row.get('capital_amount_dzd'),
+                registration_date=row.get('registration_date'),
+                wilaya=row.get('wilaya'),
+                legal_form=row.get('legal_form'),
+                nace_code=row.get('nace_code'),
+                geocoded_lat=row.get('geocoded_lat'),
+                geocoded_lon=row.get('geocoded_lon'),
+                quality_score=row.get('quality_score'),
             ))
 
     if companies_to_add:
