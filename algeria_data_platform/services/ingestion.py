@@ -1,6 +1,6 @@
 import pandas as pd
 from sqlalchemy.orm import Session
-from ..db.models import Company
+from ..db.models import Company, Demographic
 import logging
 import great_expectations as gx
 from great_expectations.core.batch import RuntimeBatchRequest
@@ -82,3 +82,26 @@ def insert_company_data(db: Session, df: pd.DataFrame):
         logging.info(f"Successfully added {len(companies_to_add)} new companies.")
     else:
         logging.info("No new companies to add.")
+
+def insert_demographic_data(db: Session, df: pd.DataFrame):
+    """
+    Ingests demographic data into the database.
+    """
+    for _, row in df.iterrows():
+        existing = db.query(Demographic).filter(Demographic.wilaya_code == str(row['wilaya_code'])).first()
+        if existing:
+            existing.population_2024 = row['population_2024']
+            existing.area_km2 = row['area_km2']
+            existing.density_per_km2 = row['density_per_km2']
+            existing.urbanization_rate = row['urbanization_rate']
+        else:
+            db.add(Demographic(
+                wilaya_code=str(row['wilaya_code']),
+                wilaya_name=row['wilaya_name'],
+                population_2024=row['population_2024'],
+                area_km2=row['area_km2'],
+                density_per_km2=row['density_per_km2'],
+                urbanization_rate=row['urbanization_rate']
+            ))
+    db.commit()
+    logging.info(f"Successfully ingested demographic data for {len(df)} wilayas.")

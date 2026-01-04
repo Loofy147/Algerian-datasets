@@ -38,3 +38,18 @@ class Salary(Base):
     period = Column(String)
     source = Column(String)
     scraped_at = Column(DateTime)
+
+class Demographic(Base):
+    """
+    Represents a demographic entry in the database.
+    """
+    __tablename__ = "demographics"
+
+    id = Column(Integer, primary_key=True, index=True)
+    wilaya_code = Column(String, unique=True, index=True)
+    wilaya_name = Column(String)
+    population_2024 = Column(Integer)
+    area_km2 = Column(Float)
+    density_per_km2 = Column(Float)
+    urbanization_rate = Column(Float)
+    updated_at = Column(DateTime, server_default=func.now())

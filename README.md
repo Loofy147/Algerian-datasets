@@ -1,17 +1,26 @@
 # Algeria Data Platform
 
-The Algeria Data Platform is a FastAPI-based web service designed to provide high-quality, cleaned, and validated data related to the Algerian market. It serves as a centralized API for accessing insights and datasets for various economic, demographic, and business analyses.
+The Algeria Data Platform is a production-grade FastAPI-based web service designed to provide high-quality, cleaned, and validated data related to the Algerian market. It serves as a centralized API for accessing insights, datasets, and economic forecasts.
+
+## Key Features
+
+-   **Multi-Source Ingestion**: Automated pipelines for company, salary, and demographic data.
+-   **Data Quality Assurance**: Integrated with **Great Expectations** for rigorous validation.
+-   **Advanced Analytics**: Implementation of the **LASSO-OLS Hybrid** model for economic forecasting.
+-   **Algeria-Specific Logic**: Built-in support for wilaya codes, legal forms, and local regulations (Law 18-07).
+-   **Operational Excellence**: Comprehensive runbooks, logging, and error handling.
 
 ## Project Structure
 
--   `algeria_data_platform/`: The core Python package containing the FastAPI application.
-    -   `main.py`: The main entry point for the FastAPI application.
-    -   `data_loader.py`: Handles loading and cleaning of the seed data.
-    -   `data/`: Contains the raw data files.
-    -   `tests/`: Contains the unit tests for the application.
--   `operations/`: Contains documentation related to engineering and operational best practices.
--   `requirements.txt`: The main application dependencies.
--   `requirements-dev.txt`: The development and testing dependencies.
+-   `algeria_data_platform/`: The core Python package.
+    -   `api/`: FastAPI routers (Companies, Salaries, Analytics, Ingestion).
+    -   `services/`: Business logic and analytics models.
+    -   `db/`: Database models and session management.
+    -   `data/`: Raw and processed datasets.
+    -   `core/`: Configuration and logging.
+-   `gx/`: Great Expectations configuration and expectation suites.
+-   `operations/`: Runbooks, checklists, and compliance documentation.
+-   `migrations/`: Alembic database migrations.
 
 ## Getting Started
 
