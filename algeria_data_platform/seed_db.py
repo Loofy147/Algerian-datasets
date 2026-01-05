@@ -1,8 +1,13 @@
 from sqlalchemy.orm import sessionmaker
 from .db.session import engine, Base
-from .db.models import Company, Salary
+from .db.models import Company, Salary, Demographic, EconomicIndicator, SectoralData
 from .data_loader import COMPANY_DATA_PATH, SALARY_DATA_PATH, load_and_clean_companies_from_csv, load_salaries_from_csv
+from .services.ingestion import insert_demographic_data, insert_economic_indicators, insert_sectoral_data
 import logging
+import pandas as pd
+import json
+import os
+from pathlib import Path
 
 # Configure basic logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -66,6 +71,29 @@ def seed_database():
     try:
         seed_companies(db_session)
         seed_salaries(db_session)
+        
+        # Seed new datasets
+        base_path = Path(__file__).resolve().parent
+        
+        # Demographics
+        demo_path = base_path / "algeria_data_platform" / "processed_demographics.csv"
+        if demo_path.exists():
+            df_demo = pd.read_csv(demo_path)
+            insert_demographic_data(db_session, df_demo)
+            
+        # Economic Indicators
+        econ_path = base_path / "algeria_data_platform" / "processed_economic_indicators.csv"
+        if econ_path.exists():
+            df_econ = pd.read_csv(econ_path)
+            insert_economic_indicators(db_session, df_econ)
+            
+        # Sectoral Data
+        sector_path = base_path / "algeria_data_platform" / "processed_sectoral_data.json"
+        if sector_path.exists():
+            with open(sector_path, "r") as f:
+                sector_data = json.load(f)
+                insert_sectoral_data(db_session, sector_data)
+                
     except Exception as e:
         logging.error(f"An error occurred during database seeding: {e}")
         db_session.rollback()

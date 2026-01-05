@@ -53,3 +53,30 @@ class Demographic(Base):
     density_per_km2 = Column(Float)
     urbanization_rate = Column(Float)
     updated_at = Column(DateTime, server_default=func.now())
+
+class EconomicIndicator(Base):
+    """
+    Represents an economic indicator entry in the database.
+    """
+    __tablename__ = "economic_indicators"
+
+    id = Column(Integer, primary_key=True, index=True)
+    year = Column(Integer, index=True)
+    gdp_growth = Column(Float)
+    inflation = Column(Float)
+    oil_price_avg = Column(Float)
+    population_millions = Column(Float)
+    unemployment_rate = Column(Float)
+    updated_at = Column(DateTime, server_default=func.now())
+
+class SectoralData(Base):
+    """
+    Represents sectoral data in the database.
+    """
+    __tablename__ = "sectoral_data"
+
+    id = Column(Integer, primary_key=True, index=True)
+    sector_name = Column(String, unique=True, index=True)
+    value_usd_billions = Column(Float)
+    growth_rate = Column(Float)
+    updated_at = Column(DateTime, server_default=func.now())

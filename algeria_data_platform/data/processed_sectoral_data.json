@@ -1,0 +1,24 @@
+{
+  "sectors": [
+    {
+      "name": "Agriculture",
+      "value_usd_billions": 24,
+      "growth_rate": 4.5
+    },
+    {
+      "name": "Energy",
+      "value_usd_billions": 45,
+      "growth_rate": 2.1
+    },
+    {
+      "name": "Real Estate",
+      "value_usd_billions": 960,
+      "growth_rate": 9.1
+    },
+    {
+      "name": "Tourism",
+      "value_usd_billions": 3.5,
+      "growth_rate": 6.8
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import pandas as pd
 from sqlalchemy.orm import Session
-from ..db.models import Company, Demographic
+from ..db.models import Company, Demographic, EconomicIndicator, SectoralData
 import logging
 import great_expectations as gx
 from great_expectations.core.batch import RuntimeBatchRequest
@@ -105,3 +105,45 @@ def insert_demographic_data(db: Session, df: pd.DataFrame):
             ))
     db.commit()
     logging.info(f"Successfully ingested demographic data for {len(df)} wilayas.")
+
+def insert_economic_indicators(db: Session, df: pd.DataFrame):
+    """
+    Ingests economic indicators into the database.
+    """
+    for _, row in df.iterrows():
+        existing = db.query(EconomicIndicator).filter(EconomicIndicator.year == int(row['year'])).first()
+        if existing:
+            existing.gdp_growth = row['gdp_growth']
+            existing.inflation = row['inflation']
+            existing.oil_price_avg = row['oil_price_avg']
+            existing.population_millions = row['population_millions']
+            existing.unemployment_rate = row['unemployment_rate']
+        else:
+            db.add(EconomicIndicator(
+                year=int(row['year']),
+                gdp_growth=row['gdp_growth'],
+                inflation=row['inflation'],
+                oil_price_avg=row['oil_price_avg'],
+                population_millions=row['population_millions'],
+                unemployment_rate=row['unemployment_rate']
+            ))
+    db.commit()
+    logging.info(f"Successfully ingested economic indicators for {len(df)} years.")
+
+def insert_sectoral_data(db: Session, data: dict):
+    """
+    Ingests sectoral data into the database.
+    """
+    for sector in data.get('sectors', []):
+        existing = db.query(SectoralData).filter(SectoralData.sector_name == sector['name']).first()
+        if existing:
+            existing.value_usd_billions = sector['value_usd_billions']
+            existing.growth_rate = sector['growth_rate']
+        else:
+            db.add(SectoralData(
+                sector_name=sector['name'],
+                value_usd_billions=sector['value_usd_billions'],
+                growth_rate=sector['growth_rate']
+            ))
+    db.commit()
+    logging.info(f"Successfully ingested sectoral data for {len(data.get('sectors', []))} sectors.")

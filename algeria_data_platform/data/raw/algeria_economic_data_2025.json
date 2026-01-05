@@ -1,0 +1,57 @@
+{
+  "country": "Algeria",
+  "data_source": "IMF DataMapper (October 2025)",
+  "indicators": {
+    "real_gdp_growth": {
+      "value": 2.9,
+      "unit": "Annual percent change",
+      "year": 2026
+    },
+    "gdp_current_prices_usd": {
+      "value": 284.98,
+      "unit": "Billions of U.S. dollars",
+      "year": 2026
+    },
+    "gdp_per_capita_usd": {
+      "value": 5960,
+      "unit": "U.S. dollars per capita",
+      "year": 2026
+    },
+    "inflation_rate": {
+      "value": 3.9,
+      "unit": "Annual percent change",
+      "year": 2026
+    },
+    "population_millions": {
+      "value": 47.85,
+      "unit": "Millions of people",
+      "year": 2026
+    },
+    "unemployment_rate": {
+      "value": 11.4,
+      "unit": "Percent",
+      "year": 2019
+    },
+    "government_gross_debt": {
+      "value": 62.2,
+      "unit": "Percent of GDP",
+      "year": 2026
+    },
+    "current_account_balance_gdp": {
+      "value": -3.8,
+      "unit": "Percent of GDP",
+      "year": 2026
+    }
+  },
+  "sectoral_data": {
+    "agriculture_market_value_usd": 24000000000,
+    "agriculture_rank": 3,
+    "real_estate_market_value_usd": 960000000000,
+    "real_estate_cagr": 9.1
+  },
+  "wilaya_population_sample": {
+    "16": {"name": "Alger", "population": 3500000},
+    "31": {"name": "Oran", "population": 1500000},
+    "25": {"name": "Constantine", "population": 1000000}
+  }
+}
