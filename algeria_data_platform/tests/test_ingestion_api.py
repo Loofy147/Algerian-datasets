@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 from algeria_data_platform.main import app
-from algeria_data_platform.db.models import Company
+from algeria_data_platform.db.models import Company, Salary
 from algeria_data_platform.api import ingestion as ingestion_api
 from fastapi import BackgroundTasks
 import io
@@ -13,9 +13,9 @@ class SyncBackgroundTasks(BackgroundTasks):
     def add_task(self, func, *args, **kwargs) -> None:
         func(*args, **kwargs)
 
-def test_ingest_companies(db_session: Session, monkeypatch):
+def test_ingest_generic_data(db_session: Session, monkeypatch):
     """
-    - Tests the /api/v1/ingest/companies endpoint.
+    - Tests the generic /api/v1/ingest/{data_type} endpoint with 'companies'.
     - Uploads a sample CSV file and verifies that the data is correctly
       ingested into the database.
     - Checks that duplicate entries are not created on subsequent uploads.
@@ -39,7 +39,7 @@ def test_ingest_companies(db_session: Session, monkeypatch):
         files={"file": ("test.csv", io.BytesIO(csv_data.encode()), "text/csv")}
     )
     assert response.status_code == 200
-    assert response.json() == {"message": "Company data ingestion started."}
+    assert response.json() == {"message": "Companies data ingestion started."}
 
     # Verify data in the database (should be present now)
     companies = db_session.query(Company).all()
@@ -100,3 +100,40 @@ def test_ingest_companies_data_quality_validation(db_session: Session):
     assert response_json["detail"]["message"] == "Data validation failed"
     assert "errors" in response_json["detail"]
     assert response_json["detail"]["errors"]["results"][2]["expectation_config"]["expectation_type"] == "expect_column_values_to_be_unique"
+
+
+def test_ingest_salaries(db_session: Session, monkeypatch):
+    """
+    - Tests the generic /api/v1/ingest/{data_type} endpoint with 'salaries'.
+    - Uploads a sample CSV file and verifies that the data is correctly
+      ingested into the database.
+    """
+    # Override BackgroundTasks to run tasks synchronously
+    app.dependency_overrides[BackgroundTasks] = lambda: SyncBackgroundTasks()
+
+    # Monkeypatch SessionLocal to use the test db_session and prevent it from being closed
+    monkeypatch.setattr(ingestion_api, "SessionLocal", lambda: db_session)
+    monkeypatch.setattr(db_session, "close", lambda: None)
+
+    # Sample CSV data for salaries
+    csv_data = """job_title,min_salary_dzd,max_salary_dzd,currency,period,source,scraped_at
+Software Engineer,100000,200000,DZD,monthly,local_survey,2023-01-01T12:00:00
+Data Scientist,120000,250000,DZD,monthly,local_survey,2023-01-01T12:00:00
+"""
+
+    # First upload
+    response = client.post(
+        "/api/v1/ingest/salaries",
+        files={"file": ("salaries.csv", io.BytesIO(csv_data.encode()), "text/csv")}
+    )
+    assert response.status_code == 200
+    assert response.json() == {"message": "Salaries data ingestion started."}
+
+    # Verify data in the database
+    salaries = db_session.query(Salary).all()
+    assert len(salaries) == 2
+    assert salaries[0].job_title == "Software Engineer"
+    assert salaries[1].min_salary_dzd == 120000
+
+    # Clean up the dependency override
+    app.dependency_overrides.clear()
