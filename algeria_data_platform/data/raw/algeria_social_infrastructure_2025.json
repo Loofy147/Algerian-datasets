@@ -1,0 +1,36 @@
+{
+  "social_indicators": {
+    "hdi_value": 0.763,
+    "internet_penetration_rate": 76.9,
+    "internet_users_millions": 36.2,
+    "mobile_penetration_rate": 112.0,
+    "literacy_rate": 81.4,
+    "life_expectancy": 77.5
+  },
+  "infrastructure_projects": [
+    {
+      "name": "Western Mining Railway",
+      "length_km": 580,
+      "status": "Track-laying completed",
+      "completion_date": "Jan 2026",
+      "impact": "Connects Gara Djebilet mines to industrial zones and ports"
+    },
+    {
+      "name": "Laghouat-Ghardaïa-El Ménéa Railway",
+      "length_km": 495,
+      "status": "First phase construction",
+      "start_date": "Dec 2025"
+    },
+    {
+      "name": "Port of El Hamdania",
+      "type": "Deep-sea port",
+      "status": "Under development",
+      "strategic_value": "Major transshipment hub for North Africa"
+    }
+  ],
+  "digital_economy": {
+    "e_commerce_readiness_index": 54.2,
+    "digital_payment_adoption": 28.5,
+    "tech_startups_count": 1200
+  }
+}

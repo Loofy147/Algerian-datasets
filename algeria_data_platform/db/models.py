@@ -80,3 +80,44 @@ class SectoralData(Base):
     value_usd_billions = Column(Float)
     growth_rate = Column(Float)
     updated_at = Column(DateTime, server_default=func.now())
+
+class FinancialMarket(Base):
+    """
+    Represents stock market session data.
+    """
+    __tablename__ = "financial_market"
+
+    id = Column(Integer, primary_key=True, index=True)
+    session_no = Column(Integer, unique=True, index=True)
+    date = Column(Date)
+    traded_volume = Column(Integer)
+    traded_value_dzd = Column(Float)
+    transactions = Column(Integer)
+    updated_at = Column(DateTime, server_default=func.now())
+
+class SocialIndicator(Base):
+    """
+    Represents social and digital indicators.
+    """
+    __tablename__ = "social_indicators"
+
+    id = Column(Integer, primary_key=True, index=True)
+    indicator_name = Column(String, unique=True, index=True)
+    value = Column(Float)
+    unit = Column(String)
+    year = Column(Integer)
+    updated_at = Column(DateTime, server_default=func.now())
+
+class InfrastructureProject(Base):
+    """
+    Represents major infrastructure projects.
+    """
+    __tablename__ = "infrastructure_projects"
+
+    id = Column(Integer, primary_key=True, index=True)
+    project_name = Column(String, unique=True, index=True)
+    project_type = Column(String)
+    status = Column(String)
+    length_km = Column(Float, nullable=True)
+    completion_date = Column(String, nullable=True)
+    updated_at = Column(DateTime, server_default=func.now())

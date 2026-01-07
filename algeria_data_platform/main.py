@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .core.config import settings
 from .core.logging_config import setup_logging
-from .api import companies, ingestion, salaries, analytics
+from .api import companies, ingestion, salaries, analytics, insights
 from fastapi.responses import JSONResponse
 
 # Configure logging
@@ -52,3 +52,4 @@ app.include_router(companies.router, prefix="/api/v1/companies", tags=["companie
 app.include_router(salaries.router, prefix="/api/v1/salaries", tags=["salaries"])
 app.include_router(ingestion.router, prefix="/api/v1", tags=["ingestion"])
 app.include_router(analytics.router, prefix="/api/v1/analytics", tags=["analytics"])
+app.include_router(insights.router, prefix="/api/v1/insights", tags=["insights"])

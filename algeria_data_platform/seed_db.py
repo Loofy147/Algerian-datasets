@@ -2,7 +2,10 @@ from sqlalchemy.orm import sessionmaker
 from .db.session import engine, Base
 from .db.models import Company, Salary, Demographic, EconomicIndicator, SectoralData
 from .data_loader import COMPANY_DATA_PATH, SALARY_DATA_PATH, load_and_clean_companies_from_csv, load_salaries_from_csv
-from .services.ingestion import insert_demographic_data, insert_economic_indicators, insert_sectoral_data
+from .services.ingestion import (
+    insert_demographic_data, insert_economic_indicators, insert_sectoral_data,
+    insert_financial_market_data, insert_social_indicators, insert_infrastructure_projects
+)
 import logging
 import pandas as pd
 import json
@@ -93,6 +96,21 @@ def seed_database():
             with open(sector_path, "r") as f:
                 sector_data = json.load(f)
                 insert_sectoral_data(db_session, sector_data)
+
+        # Financial Market Data
+        financial_file = base_path / "data" / "raw" / "algiers_stock_exchange_2025.json"
+        if financial_file.exists():
+            with open(financial_file, 'r') as f:
+                financial_data = json.load(f)
+                insert_financial_market_data(db_session, financial_data)
+
+        # Social and Infrastructure Data
+        social_infra_file = base_path / "data" / "raw" / "algeria_social_infrastructure_2025.json"
+        if social_infra_file.exists():
+            with open(social_infra_file, 'r') as f:
+                social_infra_data = json.load(f)
+                insert_social_indicators(db_session, social_infra_data)
+                insert_infrastructure_projects(db_session, social_infra_data)
                 
     except Exception as e:
         logging.error(f"An error occurred during database seeding: {e}")

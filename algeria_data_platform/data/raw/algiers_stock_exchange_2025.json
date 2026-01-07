@@ -1,0 +1,19 @@
+{
+  "market": "Algiers Stock Exchange (SGBV)",
+  "year": 2025,
+  "sessions": [
+    {"session_no": 2782, "date": "07/01/2025", "traded_volume": 13680, "traded_value_dzd": 30574800.00, "transactions": 12},
+    {"session_no": 2783, "date": "09/01/2025", "traded_volume": 56268, "traded_value_dzd": 127728360.00, "transactions": 32},
+    {"session_no": 2785, "date": "14/01/2025", "traded_volume": 44296, "traded_value_dzd": 100684808.00, "transactions": 26},
+    {"session_no": 2815, "date": "25/03/2025", "traded_volume": 121615, "traded_value_dzd": 265787075.00, "transactions": 174},
+    {"session_no": 2821, "date": "10/04/2025", "traded_volume": 341822, "traded_value_dzd": 741080800.00, "transactions": 370},
+    {"session_no": 2856, "date": "03/07/2025", "traded_volume": 692814, "traded_value_dzd": 1693545998.00, "transactions": 15},
+    {"session_no": 2901, "date": "16/10/2025", "traded_volume": 231000, "traded_value_dzd": 469917000.00, "transactions": 335}
+  ],
+  "listed_companies_sample": [
+    {"ticker": "ALL", "price_dzd": 330.00},
+    {"ticker": "AOM", "price_dzd": 290.00},
+    {"ticker": "BIO", "price_dzd": 2501.00},
+    {"ticker": "CPA", "price_dzd": 2300.00}
+  ]
+}

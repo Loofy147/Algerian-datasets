@@ -1,6 +1,6 @@
 import pandas as pd
 from sqlalchemy.orm import Session
-from ..db.models import Company, Demographic, EconomicIndicator, SectoralData
+from ..db.models import Company, Demographic, EconomicIndicator, SectoralData, FinancialMarket, SocialIndicator, InfrastructureProject
 import logging
 import great_expectations as gx
 from great_expectations.core.batch import RuntimeBatchRequest
@@ -147,3 +147,65 @@ def insert_sectoral_data(db: Session, data: dict):
             ))
     db.commit()
     logging.info(f"Successfully ingested sectoral data for {len(data.get('sectors', []))} sectors.")
+
+def insert_financial_market_data(db: Session, data: dict):
+    """
+    Ingests financial market data into the database.
+    """
+    from datetime import datetime
+    for session in data.get('sessions', []):
+        existing = db.query(FinancialMarket).filter(FinancialMarket.session_no == session['session_no']).first()
+        date_obj = datetime.strptime(session['date'], '%d/%m/%Y').date()
+        if existing:
+            existing.date = date_obj
+            existing.traded_volume = session['traded_volume']
+            existing.traded_value_dzd = session['traded_value_dzd']
+            existing.transactions = session['transactions']
+        else:
+            db.add(FinancialMarket(
+                session_no=session['session_no'],
+                date=date_obj,
+                traded_volume=session['traded_volume'],
+                traded_value_dzd=session['traded_value_dzd'],
+                transactions=session['transactions']
+            ))
+    db.commit()
+    logging.info(f"Successfully ingested financial market data for {len(data.get('sessions', []))} sessions.")
+
+def insert_social_indicators(db: Session, data: dict):
+    """
+    Ingests social indicators into the database.
+    """
+    for name, value in data.get('social_indicators', {}).items():
+        existing = db.query(SocialIndicator).filter(SocialIndicator.indicator_name == name).first()
+        if existing:
+            existing.value = value
+        else:
+            db.add(SocialIndicator(
+                indicator_name=name,
+                value=value,
+                unit="Percentage/Value",
+                year=2025
+            ))
+    db.commit()
+    logging.info(f"Successfully ingested social indicators.")
+
+def insert_infrastructure_projects(db: Session, data: dict):
+    """
+    Ingests infrastructure projects into the database.
+    """
+    for project in data.get('infrastructure_projects', []):
+        existing = db.query(InfrastructureProject).filter(InfrastructureProject.project_name == project['project_name']).first()
+        if existing:
+            existing.status = project['status']
+            existing.completion_date = project.get('completion_date')
+        else:
+            db.add(InfrastructureProject(
+                project_name=project['project_name'],
+                project_type=project.get('type', 'Railway'),
+                status=project['status'],
+                length_km=project.get('length_km'),
+                completion_date=project.get('completion_date')
+            ))
+    db.commit()
+    logging.info(f"Successfully ingested infrastructure projects.")
